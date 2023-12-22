@@ -15,6 +15,7 @@ import json
 from datetime import datetime
 
 COLUMNS = [
+    "msg_id",
     "date",
     "msg_content",
 ]
@@ -125,6 +126,7 @@ def process_message(message):
         return None
 
     return {
+        "msg_id": msg_id,
         "date": date,
         "msg_content": filter_text(msg_content),
     }
@@ -132,7 +134,7 @@ def process_message(message):
 
 def parse_telegram_to_csv(jdata):
     chat_name = get_chat_name(jdata)
-    output_filepath = 'output.csv'
+    output_filepath = 'filtered_messages.csv'
 
     with open(output_filepath, "w", encoding="utf-8-sig", newline="") as output_file:
         writer = csv.DictWriter(output_file, COLUMNS, dialect="unix", quoting=csv.QUOTE_NONNUMERIC)

@@ -4,6 +4,7 @@
 import logging
 import re
 
+
 def get_wide_ordinal(char):
     if len(char) != 2:
         return ord(char)
@@ -54,20 +55,97 @@ unique_tatar_alphabet = ['Ә', 'ә', 'Җ', 'җ', 'Ң', 'ң', 'Ө', 'ө', 'Ү', '
 import re
 import codecs
 
-
 # import fasttext
 #
 # PRETRAINED_MODEL_PATH = '/tmp/lid.176.bin'
 # model = fasttext.load_model(PRETRAINED_MODEL_PATH)
 
+import csv
+
+COLUMNS = [
+    "msg_id",
+    "date",
+    "msg_content",
+]
+
+COLUMNS2 = [
+    "date",
+    "msg_content",
+]
+
+tatar_file = codecs.open('tatar_messages.csv', 'w', "utf_8_sig")
+uncertain_file = codecs.open('uncertain_messages.csv', 'w', "utf_8_sig")
+certain_file = codecs.open('certain.csv', 'w', "utf_8_sig")
+
+csv_writer = csv.DictWriter(tatar_file, COLUMNS, dialect="unix", quoting=csv.QUOTE_NONNUMERIC)
+csv_writer.writeheader()
+
+csv_writer_uncertain = csv.DictWriter(uncertain_file, COLUMNS, dialect="unix", quoting=csv.QUOTE_NONNUMERIC)
+csv_writer_uncertain.writeheader()
+
+csv_writer_certain = csv.DictWriter(certain_file, COLUMNS2, dialect="unix", quoting=csv.QUOTE_NONNUMERIC)
+
+csv_writer_leftover = csv.DictWriter(codecs.open('tatar_leftover_messages.csv', 'w', "utf_8_sig"), COLUMNS, dialect="unix", quoting=csv.QUOTE_NONNUMERIC)
+
+with open('original_messages.csv', encoding="utf-8-sig", ) as csv_file:
+    csv_reader = csv.reader(csv_file, delimiter=',')
+    line_count = 0
+    for row in csv_reader:
+        id = row[0]
+        date = row[1]
+        message = row[2]
+
+        classified = False
+
+        for tatar_letter in unique_tatar_alphabet:
+            if tatar_letter in message:
+                csv_writer.writerow({
+                    "msg_id": id,
+                    "date": date,
+                    "msg_content": message,
+                })
+                classified = True
+                break
+
+        if not classified:
+            csv_writer_uncertain.writerow({
+                "msg_id": id,
+                "date": date,
+                "msg_content": message,
+            })
 
 
+trigger_ru_words = 'домтатарскойкниги музейонлайн Афиша приглашаем Спикер: Регистрация'.split()
 
+import re
 
+with open('tatar_messages.csv', encoding="utf-8-sig", ) as csv_file:
+    csv_reader = csv.reader(csv_file, delimiter=',')
+    line_count = 0
+    for row in csv_reader:
+        id = row[0]
+        date = row[1]
+        message = row[2]
 
+        classified = False
 
+        for word in trigger_ru_words:
+            if re.search(word, message, re.IGNORECASE):
+                csv_writer_certain.writerow({
+                    "date": date,
+                    "msg_content": message,
+                })
+                classified = True
+                break
 
-#import polyglot
+        if not classified:
+            csv_writer_leftover.writerow({
+                "msg_id": id,
+                "date": date,
+                "msg_content": message,
+            })
+
+# import polyglot
 # from polyglot.text import Text, Word
 # text = Text("Bonjour, Mesdames.")
 # text.language
@@ -92,7 +170,6 @@ import codecs
 # fileObj.close()
 #
 # codecs.open('out.txt', 'w', "utf_8_sig").write(text)
-
 
 
 # print('tat')
