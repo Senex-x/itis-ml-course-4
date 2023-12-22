@@ -1,6 +1,6 @@
-from pprint import pprint as print
-from gensim.models.fasttext import FastText
-from gensim.test.utils import datapath
+# from pprint import pprint as print
+# from gensim.models.fasttext import FastText
+# from gensim.test.utils import datapath
 import logging
 import re
 
@@ -17,12 +17,14 @@ def filter_text(text):
             filtered_text.append(letter)
     return re.sub(' +', ' ', ''.join(filtered_text))
 
+
 def filter_unique_only(source, other):
     unique_characters = []
     for letter in source:
         if letter not in other:
             unique_characters.append(letter)
     return unique_characters
+
 
 message = 'Афиша Дома татарской книги на эту неделю / Татар китабы йортында бу атнада ниләр көтелә 💥  ▪️' \
           '5 сентябрь, 15:00. КАЛЛИГРАФИЯ Тылсымлы гарәп хәрефләре белән дуслашу мөмкинлеге. ' \
@@ -49,12 +51,37 @@ russian_alphabet = 'А а Б б В в Г г Д д Е е Ё ё Ж ж З з И и 
 
 unique_tatar_alphabet = ['Ә', 'ә', 'Җ', 'җ', 'Ң', 'ң', 'Ө', 'ө', 'Ү', 'ү', 'Һ', 'һ']
 
-from langdetect import detect_langs, DetectorFactory
-DetectorFactory.seed = 0
-print(detect_langs('Татар китабы йортында бу атнада ниләр көтелә'))
-
 import re
 import codecs
+
+
+# import fasttext
+#
+# PRETRAINED_MODEL_PATH = '/tmp/lid.176.bin'
+# model = fasttext.load_model(PRETRAINED_MODEL_PATH)
+
+
+
+
+
+
+
+
+#import polyglot
+# from polyglot.text import Text, Word
+# text = Text("Bonjour, Mesdames.")
+# text.language
+
+# DOESN'T WORK
+# from langdetect import detect_langs, DetectorFactory
+# DetectorFactory.seed = 0
+# print(detect_langs('Татар китабы йортында бу атнада ниләр көтелә'))
+
+
+# import cld3
+# cld3.get_language("影響包含對氣候的變化以及自然資源的枯竭程度")
+# LanguagePrediction(language='zh', probability=0.999969482421875, is_reliable=True, proportion=1.0)
+
 
 # fileObj = codecs.open("text.txt", "r", "utf_8_sig")
 # text = fileObj.read()  # или читайте по строке
