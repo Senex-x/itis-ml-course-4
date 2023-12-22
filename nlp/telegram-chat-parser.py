@@ -15,18 +15,8 @@ import json
 from datetime import datetime
 
 COLUMNS = [
-    "msg_id",
-    "sender",
-    "sender_id",
-    "reply_to_msg_id",
     "date",
-    "msg_type",
     "msg_content",
-    "has_mention",
-    "has_email",
-    "has_phone",
-    "has_hashtag",
-    "is_bot_command",
 ]
 
 FILE_TYPES = [
@@ -44,6 +34,16 @@ MENTION_TYPES = [
 
 NULL_NAME_COUNTER = 0
 
+tatar_alphabet = 'А а Ә ә Б б В в Г г Д д Е е Ё ё Ж ж Җ җ З з И и Й й К к Л л М м Н н Ң ң О о Ө ө П п Р р С с Т т У у Ү ү Ф ф Х х Һ һ Ц ц Ч ч Ш ш Щ щ Ъ ъ Ы ы Ь ь Э э Ю ю Я я'.split()
+
+russian_alphabet = 'А а Б б В в Г г Д д Е е Ё ё Ж ж З з И и Й й К к Л л М м Н н О о П п Р р С с Т т У у Ф ф Х х Ц ц Ч ч Ш ш Щ щ Ъ ъ Ы ы Ь ь Э э Ю ю Я я'.split()
+
+def filter_text(text):
+    filtered_text = []
+    for letter in text:
+        if letter == ' ' or letter in tatar_alphabet or letter in russian_alphabet:
+            filtered_text.append(letter)
+    return re.sub(' +', ' ', ''.join(filtered_text))
 
 def get_chat_name(jdata):
     global NULL_NAME_COUNTER
@@ -125,18 +125,8 @@ def process_message(message):
         return None
 
     return {
-        "msg_id": msg_id,
-        "sender": sender,
-        "sender_id": sender_id,
-        "reply_to_msg_id": reply_to_msg_id,
         "date": date,
-        "msg_type": msg_type,
-        "msg_content": msg_content,
-        "has_mention": has_mention,
-        "has_email": has_email,
-        "has_phone": has_phone,
-        "has_hashtag": has_hashtag,
-        "is_bot_command": is_bot_command,
+        "msg_content": filter_text(msg_content),
     }
 
 
